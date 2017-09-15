@@ -1,3 +1,23 @@
+BOSAuth = function() {
+    return {
+      init: function(onComplete) {
+        fetch(
+          new Request("https://slingo.gameiom.com/bos-admin/j_spring_security_check",
+            {
+              method:'POST',
+              redirect: 'manual',
+              mode: 'no-cors',
+              body: JSON.stringify({j_username:"paul", j_password:"UzYN5WH"})
+            })
+        ).then(
+          function() {
+            onComplete()
+          }
+        )
+      }
+    }
+}
+
 DatasourceModel = function(theFreeboardModel, datasourcePlugins) {
 	var self = this;
 
@@ -2843,39 +2863,43 @@ var freeboard = (function()
 	return {
 		initialize          : function(allowEdit, finishedCallback)
 		{
-			ko.applyBindings(theFreeboardModel);
+			var onAuth = function() {
+				ko.applyBindings(theFreeboardModel);
 
-			// Check to see if we have a query param called load. If so, we should load that dashboard initially
-			var freeboardLocation = getParameterByName("load");
+				// Check to see if we have a query param called load. If so, we should load that dashboard initially
+				var freeboardLocation = getParameterByName("load");
 
-			if(freeboardLocation != "")
-			{
-				$.ajax({
-					url    : freeboardLocation,
-					success: function(data)
-					{
-						theFreeboardModel.loadDashboard(data);
-
-						if(_.isFunction(finishedCallback))
-						{
-							finishedCallback();
-						}
-					}
-				});
-			}
-			else
-			{
-				theFreeboardModel.allow_edit(allowEdit);
-				theFreeboardModel.setEditing(allowEdit);
-
-				freeboardUI.showLoadingIndicator(false);
-				if(_.isFunction(finishedCallback))
+				if(freeboardLocation != "")
 				{
-					finishedCallback();
-				}
+					$.ajax({
+						url    : freeboardLocation,
+						success: function(data)
+						{
+							theFreeboardModel.loadDashboard(data);
 
-                freeboard.emit("initialized");
+							if(_.isFunction(finishedCallback))
+							{
+								finishedCallback();
+							}
+						}
+					});
+				}
+				else
+				{
+					theFreeboardModel.allow_edit(allowEdit);
+					theFreeboardModel.setEditing(allowEdit);
+
+					freeboardUI.showLoadingIndicator(false);
+					if(_.isFunction(finishedCallback))
+					{
+						finishedCallback();
+					}
+
+	                freeboard.emit("initialized");
+				}
 			}
+			var bosAuth = new BOSAuth();
+			bosAuth.init(onAuth);
 		},
 		newDashboard        : function()
 		{

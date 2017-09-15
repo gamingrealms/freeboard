@@ -27,6 +27,7 @@ module.exports = function(grunt) {
             },
 			fb : {
 				src : [
+					'lib/js/gr/bos-auth.js',
 					'lib/js/freeboard/DatasourceModel.js',
 					'lib/js/freeboard/DeveloperConsole.js',
 					'lib/js/freeboard/DialogBox.js',
@@ -95,7 +96,17 @@ module.exports = function(grunt) {
               hostname: '*',
               base: '.',
               keepalive: 'true'
-            }
+            },
+            middleware: function (connect) {
+            var middlewares = [
+                //Enable CORS
+                connect().use(function (req, res, next) {
+                  res.setHeader('Access-Control-Allow-Origin', '*');
+                  next();
+                })
+              ];
+            return middlewares;
+      }
           }
         },
         'string-replace': {
