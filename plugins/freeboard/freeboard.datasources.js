@@ -59,38 +59,6 @@
 					updateCallback(response.json());
 				}
 			)
-
-			/*$.ajax({
-				url: requestURL,
-				dataType: (errorStage == 1) ? "JSONP" : "JSON",
-				type: currentSettings.method || "GET",
-				data: body,
-				beforeSend: function (xhr) {
-					try {
-						_.each(currentSettings.headers, function (header) {
-							var name = header.name;
-							var value = header.value;
-
-							if (!_.isUndefined(name) && !_.isUndefined(value)) {
-								xhr.setRequestHeader(name, value);
-							}
-						});
-					}
-					catch (e) {
-					}
-				},
-				success: function (data) {
-					lockErrorStage = true;
-					updateCallback(data);
-				},
-				error: function (xhr, status, error) {
-					if (!lockErrorStage) {
-						// TODO: Figure out a way to intercept CORS errors only. The error message for CORS errors seems to be a standard 404.
-						errorStage++;
-						self.updateNow();
-					}
-				}
-			});*/
 		}
 
 		this.onDispose = function () {
